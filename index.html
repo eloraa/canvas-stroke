@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Canvas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+        html,
+        body,
+        .__root {
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        a,
+        a:hover,
+        a:active,
+        a:focus,
+        a:visited {
+            color: inherit;
+            text-decoration: none;
+            pointer-events: all!important;
+        }
+        .__root * {
+            mix-blend-mode: difference;
+            font-weight: bold;
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .__root {
+            margin-top: 3rem;
+            height: calc(100% - 6rem);
+            padding: 0 5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+        }
+        .__ {
+            padding-right: 200px;
+            padding-left: 2rem;
+            padding-bottom: 1.5rem;
+            background-color: #fff;
+            display: flex;
+            align-items: end;
+        }
+        ._,
+        ._ > * {
+            display: flex;
+            justify-content: space-between;
+        }
+        ._ {
+            padding-right: 4rem;
+            flex-direction: column;
+            color: #fff;
+        }
+        ._ > * {
+            align-items: center;
+        }
+        ._ * {
+            font-size: .9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="__root">
+        <div class="_">
+            <div>
+                <h1>Neon</h1>
+                <h4>v1.0.0</h4>
+            </div>
+            <div>
+                <h4>2023</h4>
+                <a href="https://github.com/eloraa/canvas-stroke/" target="_blank">Source Code</a>
+            </div>
+        </div>
+        <div class="__">We Believe We Can Fly</div>
+    </div>
+    <canvas id="colorfulCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('colorfulCanvas');
+        const ctx = canvas.getContext('2d');
+        let hue = 0;
+        let isDrawing = false;
+        let lastX = 0, lastY = 0
+
+        // Set canvas dimensions to match the window dimensions
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        ctx.strokeStyle = '#bada55'
+        ctx.lineWidth = 100;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        canvas.addEventListener('mousedown', (event) => {
+            lastX = event.clientX;
+            lastY = event.clientY;
+            isDrawing = true;
+            ctx.beginPath();
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+            ctx.closePath();
+        });
+
+        canvas.addEventListener('mousemove', draw);
+
+        function draw(event) {
+            if (!isDrawing) return;
+
+            ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(event.clientX, event.clientY);
+
+            ctx.stroke();
+
+            hue = (hue + 1) % 360;
+            lastX = event.clientX;
+            lastY = event.clientY;
+        }
+
+        
+    </script>
+</body>
+</html>
