@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Canvas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+        html,
+        body,
+        .__root {
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            background-color: #fff;
+        }
+        a,
+        a:hover,
+        a:active,
+        a:focus,
+        a:visited {
+            color: inherit;
+            text-decoration: none;
+            pointer-events: all!important;
+        }
+        .__root * {
+            mix-blend-mode: difference;
+            font-weight: bold;
+            font-size: 1rem;
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .__root {
+            margin-top: 3rem;
+            height: calc(100% - 6rem);
+            padding: 0 5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+        }
+        .__ {
+            padding-right: 200px;
+            padding-left: 2rem;
+            padding-bottom: 1.5rem;
+            background-color: #fff;
+            display: flex;
+            align-items: end;
+        }
+        ._,
+        ._ > * {
+            display: flex;
+            justify-content: space-between;
+        }
+        ._ {
+            padding-right: 4rem;
+            flex-direction: column;
+            color: #fff;
+        }
+        ._ > * {
+            align-items: center;
+        }
+        ._ * {
+            font-size: .9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="__root">
+        <div class="_">
+            <div>
+                <h1>Neon</h1>
+                <h4>v1.0.0</h4>
+            </div>
+            <div>
+                <h4>2023</h4>
+                <a href="https://github.com/eloraa/canvas-stroke/" target="_blank">Source Code</a>
+            </div>
+        </div>
+        <div class="__">We Believe We Can Fly</div>
+    </div>
+    <canvas id="colorfulCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("colorfulCanvas");
+        const context = canvas.getContext("2d");
+
+        // Set canvas size to match the viewport size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let lastX = 0;
+        let lastY = 0;
+        let lineWidth = 5; // Initial line width
+        let maxLineWidth = 100;
+        let hue = 0; // Initial hue value
+        let hueIncrement = 0.4; // Slower increment for slower color change
+
+        context.lineCap = "round"; // Set line cap to round for smooth ends
+
+        function draw(e) {
+
+            // Update the hue value as you draw
+            hue += hueIncrement;
+
+            if (hue >= 360) {
+                hue = 0;
+            }
+
+            // Set the stroke color with reduced alpha for the trail effect
+            context.strokeStyle = `hsla(${hue}, 100%, 50%)`;
+            context.lineWidth = lineWidth;
+
+            context.beginPath();
+            context.moveTo(lastX, lastY);
+
+            // Define a custom path for the brush stroke
+            context.quadraticCurveTo(e.clientX, e.clientY, e.clientX + 1, e.clientY + 1);
+
+            context.stroke();
+
+            [lastX, lastY] = [e.clientX, e.clientY];
+
+            // Increase line width based on mouse speed (up to maxLineWidth)
+            lineWidth += 2;
+            if (lineWidth > maxLineWidth) {
+                lineWidth = maxLineWidth;
+            }
+        }
+
+
+        function clearCanvas() {
+            // Slowly clear the canvas with a white fill to create a trail effect
+            context.fillStyle = `rgba(255, 255, 255, 0.08)`;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        canvas.addEventListener("mousemove", draw);
+
+        // Set an interval to clear the canvas for the trail effect
+        setInterval(clearCanvas, 80); // Adjust the interval for desired trail persistence
+    
+    </script>
+</body>
+</html>
